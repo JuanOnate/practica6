@@ -11,7 +11,7 @@ class WeatherLogic {
 
       if (locationData != null) {
         // Realizar la solicitud HTTP
-        final apiKey = 'f867dff8c864293f7f3b39d86b7c4250';
+        final apiKey = 'f867dff8c864293f7f3b39d86b7c4250'; // Reemplaza con tu clave de API
         final response = await http.get(Uri.parse(
             'https://api.openweathermap.org/data/2.5/forecast?lat=${locationData.latitude}&lon=${locationData.longitude}&appid=$apiKey&units=metric'));
 
@@ -21,37 +21,37 @@ class WeatherLogic {
           Map<String, dynamic> data = json.decode(response.body);
           List<dynamic> list = data['list'];
 
-          String currentCity = data['city']['name'];
-          String currentDate = '';
           for (var item in list) {
             String date = item['dt_txt'].toString().substring(0, 10);
+            double temperature = item['main']['temp'].toDouble();
+            double maxTemperature = item['main']['temp_max'].toDouble();
+            double minTemperature = item['main']['temp_min'].toDouble();
+            String weatherDescription = item['weather'][0]['description'];
+            String iconCode = item['weather'][0]['icon'];
+            String cityName = data['city']['name'];
 
-            if (date != currentDate) {
-              // Nueva fecha, agregar temperatura y nombre de la ciudad al listado
-              currentDate = date;
-              double temperature = item['main']['temp'].toDouble();
-              String weatherDescription = item['weather'][0]['description'];
-              String iconCode = item['weather'][0]['icon'];
-
-              dailyTemperatures.add({
-                'date': date,
-                'temperature': temperature,
-                'weatherDescription': weatherDescription,
-                'iconCode': iconCode,
-                'cityName': currentCity, // Agregar el nombre de la ciudad
-              });
-            }
+            // Agregar datos al listado
+            dailyTemperatures.add({
+              'date': date,
+              'temperature': temperature,
+              'maxTemperature': maxTemperature,
+              'minTemperature': minTemperature,
+              'weatherDescription': weatherDescription,
+              'iconCode': iconCode,
+              'cityName': cityName,
+            });
           }
 
           return dailyTemperatures;
         } else {
+          print('Error en la solicitud HTTP: ${response.statusCode}');
           throw Exception('Error al cargar datos del pronóstico del tiempo');
         }
       } else {
         throw Exception('Error al obtener la ubicación');
       }
     } catch (e) {
-      print('Error: $e');
+      print('Error general: $e');
       return [];
     }
   }

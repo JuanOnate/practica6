@@ -57,6 +57,9 @@ class _WeatherScreenState extends State<WeatherScreen> {
                 Text('Descripción del clima: ${dailyTemperatures[0]['weatherDescription']}'),
                 Image.network('https://openweathermap.org/img/wn/${dailyTemperatures[0]['iconCode']}@2x.png'),
                 SizedBox(height: 20),
+                Text('Temperatura máxima del día actual: ${dailyTemperatures[0]['maxTemperature']}°C'),
+                Text('Temperatura mínima del día actual: ${dailyTemperatures[0]['minTemperature']}°C'),
+                SizedBox(height: 20),
                 Text('Pronóstico para los próximos 5 días:'),
                 Container(
                   height: 170,
