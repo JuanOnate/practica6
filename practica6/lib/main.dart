@@ -26,10 +26,7 @@ class WeatherScreen extends StatefulWidget {
 
 class _WeatherScreenState extends State<WeatherScreen> {
   WeatherLogic weatherLogic = WeatherLogic();
-  double? temperature;
-  String? cityName;
-  String? weatherDescription;
-  String? iconCode;
+  List<Map<String, dynamic>> dailyTemperatures = [];
 
   @override
   void initState() {
@@ -38,13 +35,10 @@ class _WeatherScreenState extends State<WeatherScreen> {
   }
 
   Future<void> _getWeatherData() async {
-    Map<String, dynamic> weatherData = await weatherLogic.getWeatherData();
-    if (weatherData.isNotEmpty) {
+    List<Map<String, dynamic>> temperatures = await weatherLogic.getWeatherData();
+    if (temperatures.isNotEmpty) {
       setState(() {
-        temperature = weatherData['temperature'];
-        cityName = weatherData['cityName'];
-        weatherDescription = weatherData['weatherDescription'];
-        iconCode = weatherData['iconCode'];
+        dailyTemperatures = temperatures;
       });
     } else {
       // Manejar error
@@ -54,14 +48,39 @@ class _WeatherScreenState extends State<WeatherScreen> {
   @override
   Widget build(BuildContext context) {
     return Center(
-      child: temperature != null && cityName != null && weatherDescription != null
+      child: dailyTemperatures.isNotEmpty
           ? Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                Text('Temperatura actual: $temperature°C'),
-                Text('Ciudad: $cityName'),
-                Text('Descripción del clima: $weatherDescription'),
-                Image.network('https://openweathermap.org/img/wn/$iconCode@2x.png'),
+                Text('Temperatura actual: ${dailyTemperatures[0]['temperature']}°C'),
+                Text('Ciudad: ${dailyTemperatures.isNotEmpty ? dailyTemperatures[0]['cityName'] : ''}'),
+                Text('Descripción del clima: ${dailyTemperatures[0]['weatherDescription']}'),
+                Image.network('https://openweathermap.org/img/wn/${dailyTemperatures[0]['iconCode']}@2x.png'),
+                SizedBox(height: 20),
+                Text('Pronóstico para los próximos 5 días:'),
+                Container(
+                  height: 170,
+                  child: ListView.builder(
+                    scrollDirection: Axis.horizontal,
+                    itemCount: dailyTemperatures.length - 1, // Excluye el día actual
+                    itemBuilder: (context, index) {
+                      return Card(
+                        margin: EdgeInsets.all(8),
+                        child: Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Text('Fecha: ${dailyTemperatures[index + 1]['date']}'),
+                              Text('Temperatura: ${dailyTemperatures[index + 1]['temperature']}°C'),
+                              Image.network('https://openweathermap.org/img/wn/${dailyTemperatures[index + 1]['iconCode']}@2x.png'),
+                            ],
+                          ),
+                        ),
+                      );
+                    },
+                  ),
+                ),
               ],
             )
           : Text('Cargando datos...'),
