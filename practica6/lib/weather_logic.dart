@@ -1,5 +1,4 @@
 import 'dart:convert';
-
 import 'package:http/http.dart' as http;
 import 'package:location/location.dart';
 
@@ -11,37 +10,43 @@ class WeatherLogic {
 
       if (locationData != null) {
         // Realizar la solicitud HTTP
-        final apiKey = 'f867dff8c864293f7f3b39d86b7c4250'; // Reemplaza con tu clave de API
+        final apiKey = 'f867dff8c864293f7f3b39d86b7c4250';
         final response = await http.get(Uri.parse(
-            'https://api.openweathermap.org/data/2.5/forecast?lat=${locationData.latitude}&lon=${locationData.longitude}&appid=$apiKey&units=metric'));
+            'https://api.openweathermap.org/data/2.5/forecast?lat=${locationData.latitude}&lon=${locationData.longitude}&lang=es&appid=$apiKey&units=metric'));
 
-        if (response.statusCode == 200) {
-          // Parsear datos y obtener solo una temperatura por día
-          List<Map<String, dynamic>> dailyTemperatures = [];
-          Map<String, dynamic> data = json.decode(response.body);
-          List<dynamic> list = data['list'];
+            if (response.statusCode == 200) {
+              // Parsear datos y obtener solo una temperatura por día
+              List<Map<String, dynamic>> dailyTemperatures = [];
+              Map<String, dynamic> data = json.decode(response.body);
+              List<dynamic> list = data['list'];
 
-          for (var item in list) {
-            String date = item['dt_txt'].toString().substring(0, 10);
-            double temperature = item['main']['temp'].toDouble();
-            double maxTemperature = item['main']['temp_max'].toDouble();
-            double minTemperature = item['main']['temp_min'].toDouble();
-            String weatherDescription = item['weather'][0]['description'];
-            String iconCode = item['weather'][0]['icon'];
-            String cityName = data['city']['name'];
+              String currentDate = '';
+              for (var item in list) {
+                String date = item['dt_txt'].toString().substring(0, 10);
 
-            // Agregar datos al listado
-            dailyTemperatures.add({
-              'date': date,
-              'temperature': temperature,
-              'maxTemperature': maxTemperature,
-              'minTemperature': minTemperature,
-              'weatherDescription': weatherDescription,
-              'iconCode': iconCode,
-              'cityName': cityName,
-            });
-          }
+                // Solo agregar la temperatura si es un nuevo día
+                if (date != currentDate) {
+                  currentDate = date;
 
+                  double temperature = item['main']['temp'].toDouble();
+                  double maxTemperature = item['main']['temp_max'].toDouble();
+                  double minTemperature = item['main']['temp_min'].toDouble();
+                  String weatherDescription = item['weather'][0]['description'];
+                  String iconCode = item['weather'][0]['icon'];
+                  String cityName = data['city']['name'];
+
+                  // Agregar datos al listado
+                  dailyTemperatures.add({
+                    'date': date,
+                    'temperature': temperature,
+                    'maxTemperature': maxTemperature,
+                    'minTemperature': minTemperature,
+                    'weatherDescription': weatherDescription,
+                    'iconCode': iconCode,
+                    'cityName': cityName,
+                  });
+                }
+              }
           return dailyTemperatures;
         } else {
           print('Error en la solicitud HTTP: ${response.statusCode}');

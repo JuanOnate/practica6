@@ -1,0 +1,8 @@
+import 'package:flutter/material.dart';
+import 'package:practica6/screens/mapScreen.dart';
+
+Map<String, WidgetBuilder> getRoutes(){
+  return{
+    '/map' : (BuildContext context) => MapScreen(),
+  };
+}
