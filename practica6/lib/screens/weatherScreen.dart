@@ -7,6 +7,7 @@ class WeatherScreen extends StatefulWidget {
 }
 
 class _WeatherScreenState extends State<WeatherScreen> {
+  
   WeatherLogic weatherLogic = WeatherLogic();
   List<Map<String, dynamic>> dailyTemperatures = [];
 
