@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:practica6/database/db.dart';
+import 'package:practica6/screens/locationDetailScreen.dart';
 import 'package:practica6/weather_logic.dart';
 
 class listWeatherMarks extends StatefulWidget {
@@ -35,7 +36,7 @@ class _listWeatherMarksState extends State<listWeatherMarks> {
 
       return updatedList;
     } else {
-      return [];  // o un valor por defecto apropiado en tu caso
+      return [];
     }
   }
 
@@ -62,7 +63,15 @@ class _listWeatherMarksState extends State<listWeatherMarks> {
                   title: Text(locationList[index]['nombre']),
                   subtitle: Text('Latitud: ${locationList[index]['latitud']}, Longitud: ${locationList[index]['longitud']}\nTemperatura: ${locationList[index]['temperature']}°C'),
                   onTap: () {
-                    // Navegar a la pantalla de detalles o realizar acciones adicionales
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => LocationDetailScreen(
+                          latitude: locationList[index]['latitud'],
+                          longitude: locationList[index]['longitud'],
+                        ),
+                      )
+                    );// Navegar a la pantalla de detalles o realizar acciones adicionales
                   },
                 );
               },
