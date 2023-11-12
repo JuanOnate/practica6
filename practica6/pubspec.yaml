@@ -7,6 +7,7 @@ environment:
   sdk: '>=3.1.0 <4.0.0'
 
 dependencies:
+  lottie: ^2.7.0
   curved_navigation_bar: ^1.0.3
   path_provider: ^2.1.1
   sqflite: ^2.3.0
@@ -23,3 +24,5 @@ dev_dependencies:
 
 flutter:
   uses-material-design: true
+  assets:
+    - animation/.

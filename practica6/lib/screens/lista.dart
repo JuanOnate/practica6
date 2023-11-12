@@ -112,8 +112,22 @@ class _listWeatherMarksState extends State<listWeatherMarks> {
               itemCount: locationList.length,
               itemBuilder: (context, index) {
                 return ListTile(
-                  title: Text(locationList[index]['nombre']),
-                  subtitle: Text('Latitud: ${locationList[index]['latitud']}, Longitud: ${locationList[index]['longitud']}\nTemperatura: ${locationList[index]['temperature']}°C'),
+                  title: Text(locationList[index]['nombre'],
+                  style: const TextStyle(
+                    color: Color.fromARGB(255, 211, 211, 211),
+                    fontWeight: FontWeight.w900,
+                    fontStyle: FontStyle.italic,
+                    fontFamily: 'Open Sans',
+                    fontSize: 20,
+                  ),),
+                  subtitle: Text('Latitud: ${locationList[index]['latitud']}\nLongitud: ${locationList[index]['longitud']}\nTemperatura: ${locationList[index]['temperature']}°C',
+                  style: const TextStyle(
+                    color: Color.fromARGB(255, 51, 51, 51),
+                    fontWeight: FontWeight.w500,
+                    fontStyle: FontStyle.normal,
+                    fontFamily: 'Open Sans',
+                    fontSize: 15,
+                  ),),
                   onTap: () {
                     Navigator.push(
                       context,

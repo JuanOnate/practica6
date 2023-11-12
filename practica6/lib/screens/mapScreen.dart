@@ -1,9 +1,12 @@
 import 'dart:async';
 
+import 'package:curved_navigation_bar/curved_navigation_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:location/location.dart';
 import 'package:practica6/database/db.dart';
+import 'package:practica6/screens/lista.dart';
+import 'package:practica6/screens/weatherScreen.dart';
 import 'package:practica6/weather_logic.dart';
 
 class MapScreen extends StatefulWidget {
@@ -48,57 +51,107 @@ class _MapScreenState extends State<MapScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: GoogleMap(
-        mapType: _currentMapType,
-        initialCameraPosition: CameraPosition(
-          target: LatLng(0, 0),
-          zoom: 14.4746,
-        ),
-        onMapCreated: (GoogleMapController controller) {
-          _controller.complete(controller);
+      bottomNavigationBar: CurvedNavigationBar(
+        height: 55,
+        color: Colors.blueGrey.shade100,
+        animationDuration: Duration(milliseconds: 600),
+        index: 1,
+        onTap: (index){
+          switch(index){
+            case 0:
+              Future.delayed(Duration(milliseconds: 600), () {
+                Navigator.push(
+                  context,
+                  PageRouteBuilder(
+                    pageBuilder: (context, animation, secondaryAnimation) => WeatherScreen(),
+                    settings: RouteSettings(name: '/principal'),
+                    transitionsBuilder: (context, animation, secondaryAnimation, child) {
+                      return child;
+                    },
+                    transitionDuration: Duration(milliseconds: 0), // Establecer la duración a 0 para desactivar la transición
+                  ),
+                );
+              });
+            break;
+            case 1:
+              //pantalla actual
+            break;
+            case 2:
+              Future.delayed(Duration(milliseconds: 600), () {
+                Navigator.push(
+                  context,
+                  PageRouteBuilder(
+                    pageBuilder: (context, animation, secondaryAnimation) => listWeatherMarks(),
+                    settings: RouteSettings(name: '/lista'),
+                    transitionsBuilder: (context, animation, secondaryAnimation, child) {
+                      return child;
+                    },
+                    transitionDuration: Duration(milliseconds: 0), // Establecer la duración a 0 para desactivar la transición
+                  ),
+                );
+              });
+            break;
+            default:
+            print('nada');
+          }
         },
-        markers: _markers,
-        onTap: _onMapTapped,
+        items: [
+          Icon(Icons.home, color: Colors.blueGrey,),
+          Icon(Icons.map, color: Colors.blueGrey,),
+          Icon(Icons.list, color: Colors.blueGrey,),
+        ]
+      ),
+      body: Stack(
+        children: [
+          GoogleMap(
+            mapType: _currentMapType,
+            initialCameraPosition: CameraPosition(
+              target: LatLng(0, 0),
+              zoom: 14.4746,
+            ),
+            onMapCreated: (GoogleMapController controller) {
+              _controller.complete(controller);
+            },
+            markers: _markers,
+            onTap: _onMapTapped,
+          ),
+          Positioned(
+            top: 16,
+            right: 16,
+            child: PopupMenuButton(
+              itemBuilder: (context) => [
+                PopupMenuItem(
+                  value: MapType.normal,
+                  child: Text('Normal'),
+                ),
+                PopupMenuItem(
+                  value: MapType.satellite,
+                  child: Text('Satelite'),
+                ),
+                PopupMenuItem(
+                  value: MapType.terrain,
+                  child: Text('Terreno'),
+                ),
+                PopupMenuItem(
+                  value: MapType.hybrid,
+                  child: Text('Hibrido'),
+                ),
+              ],
+              onSelected: (MapType result){
+                setState(() {
+                  _currentMapType = result;
+                });
+              },
+            ),
+          )
+        ],
       ),
       floatingActionButton: FloatingActionButton.extended(
         onPressed: () => _getCurrentLocation(),
         label: const Text('Mi ubicación'),
         icon: const Icon(Icons.my_location),
       ),
-      appBar: AppBar(
-        title: Text('Mapa'),
-        actions: [
-          IconButton(
-            onPressed: () => Navigator.pushNamed(context, '/lista').then((value){setState((){});}),
-            icon: const Icon(Icons.list)
-          ),
-          PopupMenuButton(
-            itemBuilder: (context) => [
-              PopupMenuItem(
-                value: MapType.normal,
-                child: Text('Normal'),
-              ),
-              PopupMenuItem(
-                value: MapType.satellite,
-                child: Text('Satelite'),
-              ),
-              PopupMenuItem(
-                value: MapType.terrain,
-                child: Text('Terreno'),
-              ),
-              PopupMenuItem(
-                value: MapType.hybrid,
-                child: Text('Hibrido'),
-              ),
-            ],
-            onSelected: (MapType result){
-              setState(() {
-                _currentMapType = result;
-              });
-            },
-          )
-        ],
-      ),
+      floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
     );
   }
 
@@ -146,17 +199,21 @@ class _MapScreenState extends State<MapScreen> {
       builder: (BuildContext context) {
         return AlertDialog(
           title: Text('Nuevo marcador'),
-          content: Column(
-            children: [
-              Text('Latitud: ${point.latitude}\nLongitud: ${point.longitude}'),
-              TextField(
-                onChanged: (value){
-                  locationName = value;
-                },
-                decoration: InputDecoration(labelText: 'Nombre del marcador'),
-              )
-            ],
+          content: Container(
+            height: 100,
+            child: Column(
+              children: [
+                Text('Latitud: ${point.latitude}\nLongitud: ${point.longitude}'),
+                TextField(
+                  onChanged: (value){
+                    locationName = value;
+                  },
+                  decoration: InputDecoration(labelText: 'Nombre del marcador'),
+                )
+              ],
+            ),
           ),
+          contentPadding: EdgeInsets.all(16.0),
           actions: [
             TextButton(
               onPressed: () => Navigator.of(context).pop(),

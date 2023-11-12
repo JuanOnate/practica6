@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:lottie/lottie.dart';
 import 'package:practica6/weather_logic.dart';
 
 class LocationDetailScreen extends StatefulWidget {
@@ -36,23 +37,83 @@ class _LocationDetailScreenState extends State<LocationDetailScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.blueGrey,
+      extendBodyBehindAppBar: true,
       appBar: AppBar(
-        title: Text('Detalles de Locación'),
+        iconTheme: IconThemeData(color: Colors.white),
+        backgroundColor: Colors.transparent,
+        elevation: 0,
       ),
       body: Center(
         child: dailyTemperatures.isNotEmpty
             ? Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  Text('Temperatura actual: ${dailyTemperatures[0]['temperature']}°C'),
-                  Text('Ciudad: ${dailyTemperatures.isNotEmpty ? dailyTemperatures[0]['cityName'] : ''}'),
-                  Text('Descripción del clima: ${dailyTemperatures[0]['weatherDescription']}'),
-                  Image.network('https://openweathermap.org/img/wn/${dailyTemperatures[0]['iconCode']}@2x.png'),
+                  Text('${dailyTemperatures.isNotEmpty ? dailyTemperatures[0]['cityName'] : ''}',
+                  style: TextStyle(
+                    color: Color.fromARGB(255, 211, 211, 211),
+                    fontWeight: FontWeight.w900,
+                    fontStyle: FontStyle.italic,
+                    fontFamily: 'Open Sans',
+                    fontSize: 40,
+                    shadows: [
+                      Shadow(
+                        blurRadius: 5.0,
+                        color: Colors.black.withOpacity(0.2),
+                        offset: Offset(4.0, 4.0),
+                      )
+                    ]
+                  ),),
+                  LottieBuilder.asset("animation/${dailyTemperatures[0]['iconCode']}.json"),
+                  Text('${dailyTemperatures[0]['temperature']}°C',
+                  style: TextStyle(
+                    color:  Color.fromARGB(255, 211, 211, 211),
+                    fontWeight: FontWeight.w900,
+                    fontStyle: FontStyle.italic,
+                    fontFamily: 'Open Sans',
+                    fontSize: 40,
+                    shadows: [
+                      Shadow(
+                        blurRadius: 5.0,
+                        color: Colors.black.withOpacity(0.2),
+                        offset: Offset(4.0, 4.0),
+                      )
+                    ]
+                  ),),
+                  Text('${dailyTemperatures[0]['weatherDescription']}',
+                  style: const TextStyle(
+                    color: Color.fromARGB(255, 211, 211, 211),
+                    fontWeight: FontWeight.w900,
+                    fontStyle: FontStyle.italic,
+                    fontFamily: 'Open Sans',
+                    fontSize: 15,
+                  ),),
                   SizedBox(height: 20),
-                  Text('Temperatura máxima del día actual: ${dailyTemperatures[0]['maxTemperature']}°C'),
-                  Text('Temperatura mínima del día actual: ${dailyTemperatures[0]['minTemperature']}°C'),
+                  Text('Max: ${dailyTemperatures[0]['maxTemperature']}°C',
+                  style: const TextStyle(
+                    color: Color.fromARGB(255, 211, 211, 211),
+                    fontWeight: FontWeight.w900,
+                    fontStyle: FontStyle.italic,
+                    fontFamily: 'Open Sans',
+                    fontSize: 15,
+                  ),),
+                  Text('Min: ${dailyTemperatures[0]['minTemperature']}°C',
+                  style: const TextStyle(
+                    color: Color.fromARGB(255, 211, 211, 211),
+                    fontWeight: FontWeight.w900,
+                    fontStyle: FontStyle.italic,
+                    fontFamily: 'Open Sans',
+                    fontSize: 15,
+                  ),),
                   SizedBox(height: 20),
-                  Text('Pronóstico para los próximos 5 días:'),
+                  const Text('Pronóstico para los próximos 5 días:',
+                  style: TextStyle(
+                    color: Color.fromARGB(255, 211, 211, 211),
+                    fontWeight: FontWeight.w900,
+                    fontStyle: FontStyle.italic,
+                    fontFamily: 'Open Sans',
+                    fontSize: 15,
+                  ),),
                   Container(
                     height: 170,
                     child: ListView.builder(
@@ -61,14 +122,42 @@ class _LocationDetailScreenState extends State<LocationDetailScreen> {
                       itemBuilder: (context, index) {
                         return Card(
                           margin: EdgeInsets.all(8),
-                          child: Padding(
+                          child: Container(
+                            decoration: BoxDecoration(
+                              color: const Color.fromARGB(255, 96, 125, 139).withOpacity(0.5),
+                              borderRadius: BorderRadius.circular(10),
+                              border: Border.all(color: Colors.white, width: 1),
+                              boxShadow: [
+                                BoxShadow(
+                                  color: Colors.black.withOpacity(0.2),
+                                  spreadRadius: 2,
+                                  blurRadius: 5,
+                                  offset: Offset(0, 3),
+                                ),
+                              ],
+                          ),
+                          
                             padding: const EdgeInsets.all(8.0),
                             child: Column(
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: [
-                                Text('Fecha: ${dailyTemperatures[index + 1]['date']}'),
-                                Text('Temperatura: ${dailyTemperatures[index + 1]['temperature']}°C'),
-                                Image.network('https://openweathermap.org/img/wn/${dailyTemperatures[index + 1]['iconCode']}@2x.png'),
+                                Text('${dailyTemperatures[index + 1]['temperature']}°C',
+                                  style: const TextStyle(
+                                    color: Color.fromARGB(255, 255, 255, 255),
+                                    fontWeight: FontWeight.w900,
+                                    fontStyle: FontStyle.italic,
+                                    fontFamily: 'Open Sans',
+                                    fontSize: 20,
+                                  ),),
+                                Text('${dailyTemperatures[index + 1]['date']}',
+                                  style: const TextStyle(
+                                    color: Color.fromARGB(255, 255, 255, 255),
+                                    fontWeight: FontWeight.w900,
+                                    fontStyle: FontStyle.italic,
+                                    fontFamily: 'Open Sans',
+                                    fontSize: 15,
+                                  ),),
+                                LottieBuilder.asset("animation/${dailyTemperatures[index + 1]['iconCode']}.json", width: 90,),
                               ],
                             ),
                           ),
