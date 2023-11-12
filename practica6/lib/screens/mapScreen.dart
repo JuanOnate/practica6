@@ -28,6 +28,21 @@ class _MapScreenState extends State<MapScreen> {
   void initState() {
     super.initState();
     _getCurrentLocation();
+    _loadMarkersFromDataBase();
+  }
+
+  Future<void> _loadMarkersFromDataBase() async{
+    try{
+      List<Map<String, dynamic>> locations = await WeatherDB().getAllLocations();
+
+      for(var location in locations){
+        double temperature = await weatherLogic.getTemperature(location['latitud'], location['longitud']);
+        LatLng position = LatLng(location['latitud'], location['longitud']);
+        _addMarker(position, temperature, location['nombre']);
+      }
+    }catch(e){
+      print('Error al cargar marcadores desde la base de datos: $e');
+    }
   }
 
   @override

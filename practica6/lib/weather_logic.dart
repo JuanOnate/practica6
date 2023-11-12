@@ -81,6 +81,24 @@ class WeatherLogic {
     }
   }
 
+  Future<String> getIcon(double latitude, double longitude) async {
+    try {
+      final apiKey = 'f867dff8c864293f7f3b39d86b7c4250';
+      final response = await http.get(Uri.parse('https://api.openweathermap.org/data/2.5/forecast?lat=$latitude&lon=$longitude&lang=es&cnt=1&appid=$apiKey&units=metric'));
+      if (response.statusCode == 200) {
+        Map<String, dynamic> data = json.decode(response.body);
+        String icon = data['list'][0]['weather']['icon'];
+        return icon;
+      } else {
+        print('Error en la solicitud HTTP: ${response.statusCode}');
+        throw Exception('Error al cargar datos del icono');
+      }
+    } catch (e) {
+      print('Error general: $e');
+      return "";
+    }
+  }
+
   Future<LocationData?> _getLocation() async {
     try {
       var location = Location();
