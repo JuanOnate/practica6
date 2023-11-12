@@ -125,7 +125,6 @@ class _MapScreenState extends State<MapScreen> {
 
   void _addMarker(LatLng position, double currentTemperature, String locationName) {
     setState(() {
-      // Utiliza addAll en lugar de asignar un nuevo conjunto de marcadores
       _markers.addAll({
         Marker(
           markerId: MarkerId(locationName),

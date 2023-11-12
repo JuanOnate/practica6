@@ -1,6 +1,9 @@
+import 'package:curved_navigation_bar/curved_navigation_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:practica6/database/db.dart';
 import 'package:practica6/screens/locationDetailScreen.dart';
+import 'package:practica6/screens/mapScreen.dart';
+import 'package:practica6/screens/weatherScreen.dart';
 import 'package:practica6/weather_logic.dart';
 
 class listWeatherMarks extends StatefulWidget {
@@ -43,8 +46,57 @@ class _listWeatherMarksState extends State<listWeatherMarks> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text('Lista de Ubicaciones'),
+      backgroundColor: Colors.blueGrey,
+      bottomNavigationBar: CurvedNavigationBar(
+        height: 55,
+        backgroundColor: Colors.blueGrey,
+        color: Colors.blueGrey.shade100,
+        animationDuration: Duration(milliseconds: 600),
+        index: 2,
+        onTap: (index){
+          switch(index){
+            case 0:
+              Future.delayed(Duration(milliseconds: 600), () {
+                Navigator.push(
+                  context,
+                  PageRouteBuilder(
+                    pageBuilder: (context, animation, secondaryAnimation) => WeatherScreen(),
+                    settings: RouteSettings(name: '/principal'),
+                    transitionsBuilder: (context, animation, secondaryAnimation, child) {
+                      return child;
+                    },
+                    transitionDuration: Duration(milliseconds: 0), // Establecer la duración a 0 para desactivar la transición
+                  ),
+                );
+              });
+            break;
+            case 1:
+              Future.delayed(Duration(milliseconds: 600), () {
+                Navigator.push(
+                  context,
+                  PageRouteBuilder(
+                    pageBuilder: (context, animation, secondaryAnimation) => MapScreen(),
+                    settings: RouteSettings(name: '/map'),
+                    transitionsBuilder: (context, animation, secondaryAnimation, child) {
+                      return child;
+                    },
+                    transitionDuration: Duration(milliseconds: 0), // Establecer la duración a 0 para desactivar la transición
+                  ),
+                );
+              });
+            break;
+            case 2:
+              //no hace nada porque este es el index de la pantalla actual
+            break;
+            default:
+            print('nada');
+          }
+        },
+        items: [
+          Icon(Icons.home, color: Colors.blueGrey,),
+          Icon(Icons.map, color: Colors.blueGrey,),
+          Icon(Icons.list, color: Colors.blueGrey,),
+        ]
       ),
       body: FutureBuilder(
         future: locations,
@@ -71,7 +123,7 @@ class _listWeatherMarksState extends State<listWeatherMarks> {
                           longitude: locationList[index]['longitud'],
                         ),
                       )
-                    );// Navegar a la pantalla de detalles o realizar acciones adicionales
+                    );
                   },
                 );
               },

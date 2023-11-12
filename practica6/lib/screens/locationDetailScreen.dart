@@ -57,7 +57,7 @@ class _LocationDetailScreenState extends State<LocationDetailScreen> {
                     height: 170,
                     child: ListView.builder(
                       scrollDirection: Axis.horizontal,
-                      itemCount: dailyTemperatures.length - 1, // Excluye el día actual
+                      itemCount: dailyTemperatures.length - 1,
                       itemBuilder: (context, index) {
                         return Card(
                           margin: EdgeInsets.all(8),
